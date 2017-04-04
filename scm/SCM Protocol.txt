@@ -1,0 +1,40 @@
+SCM Protocol
+
+| SCM Key | Peer Type | Peer Id | Command | Payload Len | Payload |
+
+SCM Key (4 bytes) = 0x1A 0x8B 0xA7 0x12
+
+Peer Type (1 byte) = Type of Sender 0x1 for Server, 0x2 for Snitch
+
+Peer Id (8 bytes) = Id of Sender Snitch/Server serial number
+
+Command (1 byte) = 
+			{
+				Register -> 1
+				Heart Beat -> 2
+				Route -> 3
+				SyncListen -> 4
+				SyncDelete -> 5
+				Ack -> 6
+				Nack -> 7
+			}
+Channel (1 byte) = Channel to be routed
+
+Payload Len (8 bytes) = Length of the following payload
+
+Payload (n bytes defined previously in Payload Len) = Generally http/https messages exchanging by 2 web servers.
+
+
+
+
+
+Link Layer:
+- All Commands (but "Route") that aren't acks should be Acked.
+
+- From the server side, if a snitch previously sent a "Start Routing" all trafic without "SCM Key" at first will be routed to Apache.
+
+- The field 'channel' will be used just along with "Route" and "Sync" Command.
+
+- SyncListen tells which channel the sender is waiting for connections, the other side should listen any other channel.
+
+- SyncDelete tells a channel should be deleted because it was deleted on the other side.
