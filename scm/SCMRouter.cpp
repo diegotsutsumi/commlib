@@ -976,6 +976,55 @@ void* SCMRouter::routerThread()
 					if(apacheSockets[recvChannel])
 					{
 						bool timeover;
+
+						/*REMOVING OMNICOMM WORD*/
+						{
+							int index=0;
+							for(int k=0;k<sendSize;k++)
+							{
+								if(index==0 && (httpBuffer[k]=='o' || httpBuffer[k]=='O'))
+								{
+									index++;
+								}
+								else if(index==1 && (httpBuffer[k]=='m' || httpBuffer[k]=='M'))
+								{
+									index++;
+								}
+								else if(index==2 && (httpBuffer[k]=='n' || httpBuffer[k]=='N'))
+								{
+									index++;
+								}
+								else if(index==3 && (httpBuffer[k]=='i' || httpBuffer[k]=='I'))omnicomm
+								{
+									index++;
+								}
+								else if(index==4 && (httpBuffer[k]=='c' || httpBuffer[k]=='C'))
+								{
+									index++;
+								}
+								else if(index==5 && (httpBuffer[k]=='o' || httpBuffer[k]=='O'))
+								{
+									index++;
+								}
+								else if(index==6 && (httpBuffer[k]=='m' || httpBuffer[k]=='M'))
+								{
+									index++;
+								}
+								else if(index==7 && (httpBuffer[k]=='m' || httpBuffer[k]=='M'))
+								{
+									for(int m=7;m>=0;m--)
+									{
+										httpBuffer[k-m]='x';
+									}
+									index=0;
+								}
+								else
+								{
+									index=0;
+								}
+							}
+						}
+
 						if(blockUserSend)
 						{
 							sendOk &= apacheSockets[recvChannel]->sendData(httpBuffer,sendSize,3,&timeover); //Sending raw http to right channel

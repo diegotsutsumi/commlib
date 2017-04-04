@@ -84,39 +84,13 @@ bool ClientSCM::runClientSCM()
 				break;
 		}
 
-		if(!serverLinkSocket->connectTo("54.207.12.56",serverPort))
+		if(!serverLinkSocket->connectTo("127.0.0.1",serverPort))
 		{
 			std::cout << "Couldn't connect to server" << std::endl;
 			return false;
 		}
 
-		serialNumber=0;
-		std::ifstream inputFile("/var/Snitch/serial_number");
-		if (inputFile.is_open())
-		{
-			getline (inputFile,line);
-			try
-			{
-				serialNumber = std::stoi(line);
-			}
-			catch (std::invalid_argument& ia)
-			{
-				std::cerr << "Invalid Serial Number: " << ia.what() << '\n';
-				return false;
-			}
-			inputFile.close();
-		}
-		else
-		{
-			std::cerr << "Couldn't open serial number file" << '\n';
-			return false;
-		}
-
-		if(serialNumber==0)
-		{
-			std::cerr << "Couldn't get serial number" << '\n';
-			return false;
-		}
+		serialNumber=1;
 
 		SCMProtocol::SCMPacket *scmPacket = new SCMProtocol::SCMPacket(SCMProtocol::Client,serialNumber,SCMProtocol::Register,0,NULL,0);
 
@@ -191,25 +165,25 @@ bool ClientSCM::runClientSCM()
  		mainRouter = new SCMRouter(SCMProtocol::Client,SCMProtocol::Server, serialNumber,1,serverLinkSocket,NULL,4096,SCMProtocol::SCMHeaderSize, clientAppIp, clientAppPort,0,false,false);
  		mainRouter->startRouting();
 
- 		//HeartBeat Thread
- 		startHeartBeat();
+		//HeartBeat Thread
+		startHeartBeat();
 
- 		while(1)
- 		{
- 			sleep(3);
- 			if(!mainRouter->isLinkUp())
- 			{
- 				break;
- 			}
- 		}
+		while(1)
+		{
+			sleep(3);
+			if(!mainRouter->isLinkUp())
+			{
+				break;
+			}
+		}
 
- 		stopHeartBeat();
+		stopHeartBeat();
 
- 		mainRouter->stopRouting();
- 		delete mainRouter;
- 		mainRouter=0;
+		mainRouter->stopRouting();
+		delete mainRouter;
+		mainRouter=0;
 
- 		std::cout << "Link with server is Down" << std::endl;
+		std::cout << "Link with server is Down" << std::endl;
 
 		return true;
 	}
