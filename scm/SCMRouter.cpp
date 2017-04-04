@@ -994,7 +994,7 @@ void* SCMRouter::routerThread()
 								{
 									index++;
 								}
-								else if(index==3 && (httpBuffer[k]=='i' || httpBuffer[k]=='I'))omnicomm
+								else if(index==3 && (httpBuffer[k]=='i' || httpBuffer[k]=='I'))
 								{
 									index++;
 								}
